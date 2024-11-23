@@ -1,12 +1,13 @@
 # Customer-Churn-Prediction-Pipeline
-A scalable data engineering pipeline to predict customer churn for a subscription-based business. Provide actionable insights and real-time dashboards for stakeholders
+A scalable data engineering **Pipeline to Predict Customer Churn** for a subscription-based business. Provide actionable insights and real-time dashboards for stakeholders
 
-Steps to Implement
-1. Data Collection (Simulated Data Source)
+---
+
+### Steps to Implement
+### 1. Data Collection (Simulated Data Source)
 We’ll generate synthetic customer and transaction data using the Faker library.
 
-python
-Copy code
+```python
 from faker import Faker
 import pandas as pd
 import random
@@ -32,31 +33,33 @@ def generate_customer_data(num_records=1000):
 # Save to CSV
 customer_data = generate_customer_data()
 customer_data.to_csv("customers.csv", index=False)
-2. Data Ingestion
+```
+---
+### 2. Data Ingestion
 Ingest the data into a cloud storage bucket (e.g., AWS S3) or local database.
 
-bash
-Copy code
+```bash
 # AWS CLI Command to Upload Data to S3
 aws s3 cp customers.csv s3://my-data-bucket/customers.csv
+```
 Alternatively, use Python to load the data into a SQL database:
-
-python
-Copy code
+```python
 from sqlalchemy import create_engine
 
 # Load data into SQLite (for demo purposes)
 engine = create_engine("sqlite:///customer_data.db")
 customer_data.to_sql("customers", engine, if_exists="replace", index=False)
-3. ETL Pipeline
+```
+---
+### 3. ETL Pipeline
 Use Apache Airflow to create a pipeline that:
 
-Extracts data from the database.
-Transforms it into clean, analytics-ready data.
-Loads it into a data warehouse like Snowflake or BigQuery.
-Airflow DAG:
-
-python
+1. Extracts data from the database.
+2. Transforms it into clean, analytics-ready data.
+3. Loads it into a data warehouse like Snowflake or BigQuery.
+   
+**Airflow DAG:**
+```python
 Copy code
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -99,11 +102,10 @@ with DAG(
     task_load = PythonOperator(task_id="load", python_callable=load)
 
     task_extract >> task_transform >> task_load
-4. Feature Engineering and Modeling
+```
+### 4. Feature Engineering and Modeling
 Prepare features and train a machine learning model for churn prediction.
-
-python
-Copy code
+```python
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
@@ -125,17 +127,16 @@ clf.fit(X_train, y_train)
 # Evaluate
 y_pred = clf.predict(X_test)
 print(f"Accuracy: {accuracy_score(y_test, y_pred)}")
+```
 Save the trained model:
-
-python
-Copy code
+```python
 import joblib
 joblib.dump(clf, "churn_model.pkl")
-5. Model Deployment
+```
+---
+### 5. Model Deployment
 Deploy the churn prediction model using FastAPI.
-
-python
-Copy code
+```python
 from fastapi import FastAPI
 import joblib
 import pandas as pd
@@ -150,16 +151,14 @@ def predict(data: dict):
     df = pd.DataFrame([data])
     prediction = model.predict(df)
     return {"churn_prediction": int(prediction[0])}
+```
 Run the API server:
-
-bash
-Copy code
+```bash
 uvicorn main:app --reload
-6. Visualization
+```
+### 6. Visualization
 Build a real-time dashboard using Plotly Dash to display churn insights.
-
-python
-Copy code
+```python
 import dash
 from dash import dcc, html
 import pandas as pd
@@ -183,8 +182,5 @@ app.layout = html.Div([
 
 if __name__ == "__main__":
     app.run_server(debug=True)
-Output/Deliverables
-Pipeline: Automated data ingestion and ETL with Airflow.
-Model: A deployed churn prediction API.
-Dashboard: Interactive dashboard for churn insights.
-Documentation: Steps for deployment and testing.
+```
+

@@ -156,6 +156,12 @@ Run the API server:
 ```bash
 uvicorn main:app --reload
 ```
+Testing FastAPI:
+
+![image](https://github.com/user-attachments/assets/0701ec7e-4a5d-4d7c-8f10-d9c5f565e669)
+
+---
+
 ### 6. Visualization
 Build a real-time dashboard using Plotly Dash to display churn insights.
 ```python
@@ -183,4 +189,6 @@ app.layout = html.Div([
 if __name__ == "__main__":
     app.run_server(debug=True)
 ```
+
+![image](https://github.com/user-attachments/assets/957ada01-6899-4667-b01a-7e1d9c37e0da)
 

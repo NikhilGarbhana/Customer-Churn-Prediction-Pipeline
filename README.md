@@ -38,9 +38,37 @@ customer_data.to_csv("customers.csv", index=False)
 ### 2. Data Ingestion
 Ingest the data into a cloud storage bucket (e.g., AWS S3) or local database.
 
-```bash
-# AWS CLI Command to Upload Data to S3
-aws s3 cp customers.csv s3://my-data-bucket/customers.csv
+```python
+# AWS Configuration
+AWS_ACCESS_KEY = "<your_access_key>"
+AWS_SECRET_KEY = "<your_secret_key>"
+RAW_BUCKET = "ng-test-csv"
+PROCESSED_BUCKET = "ng-test-csv-processed"
+
+CSV_FILE_PATH = "customers.csv"  # Local CSV file path
+S3_OBJECT_NAME = "customers.csv"  # Desired S3 path
+FILE_KEY = "transformed/customers.csv"  # Path to the cleaned data in S3
+
+# Initialize S3 client
+s3_client = boto3.client(
+    "s3",
+    aws_access_key_id=AWS_ACCESS_KEY,
+    aws_secret_access_key=AWS_SECRET_KEY,
+    region_name='eu-north-1'
+)
+
+# Function to Upload File
+def upload_to_s3(file_path, bucket_name, object_name):
+    try:
+        s3_client.upload_file(file_path, bucket_name, object_name)
+        print(f"File uploaded successfully to s3://{bucket_name}/{object_name}")
+    except FileNotFoundError:
+        print("File not found. Check the file path.")
+    except NoCredentialsError:
+        print("AWS credentials not available.")
+
+# Upload the file
+upload_to_s3(CSV_FILE_PATH, RAW_BUCKET, S3_OBJECT_NAME)
 ```
 Alternatively, use Python to load the data into a SQL database:
 ```python
@@ -60,7 +88,6 @@ Use Apache Airflow to create a pipeline that:
    
 **Airflow DAG:**
 ```python
-Copy code
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
